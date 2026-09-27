@@ -1,0 +1,33 @@
+{
+  "name": "sentinela",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "sentinela-api",
+    "sentinela-web",
+    "sentinela-test-api"
+  ],
+  "engines": {
+    "node": ">=22.12.0 <23"
+  },
+  "scripts": {
+    "dev": "npm run build -w sentinela-api && npm run build -w sentinela-test-api && concurrently -k -n api,web,test-api \"npm run dev -w sentinela-api\" \"npm run dev -w sentinela-web\" \"npm run dev -w sentinela-test-api\"",
+    "build": "npm run build --workspaces",
+    "test": "npm run build -w sentinela-api && npm run build -w sentinela-test-api && tsx --test tests/unit.test.ts",
+    "test:integration": "npm run build -w sentinela-api && npm run build -w sentinela-test-api && tsx --test --test-concurrency=1 tests/integration.test.ts",
+    "test:e2e": "playwright test",
+    "db:create": "tsx sentinela-api/src/db/cli.ts create",
+    "migration:run": "tsx sentinela-api/src/db/cli.ts migrate",
+    "migration:revert": "tsx sentinela-api/src/db/cli.ts revert",
+    "seed": "tsx sentinela-api/src/db/cli.ts seed",
+    "env:generate": "node scripts/env-generate.cjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@types/express": "5.0.3",
+    "@types/node": "22.18.6",
+    "concurrently": "9.2.4",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  }
+}
